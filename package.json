@@ -5,5 +5,8 @@
     "openai": "^4.67.3",
     "tesseract.js": "^2.1.1",
     "xlsx": "^0.18.5"
+  },
+  "scripts": {
+    "start": "node test.mjs"
   }
 }

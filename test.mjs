@@ -8,102 +8,43 @@ const openai = new OpenAI({
 
 // Function to convert image to Base64
 function convertImageToBase64(imagePath) {
-  // Read the image file synchronously
   const imageBuffer = fs.readFileSync(imagePath);
-  // Convert the buffer to a Base64 string
   const base64Image = imageBuffer.toString("base64");
   return base64Image;
 }
 
 function cleanString(inputString) {
-  // 按行分割字符串
-  const lines = inputString.split("\n");
-
-  // 去掉第一行和最后一行
-  const cleanedLines = lines.slice(1, -1);
-
-  // 重新拼接成字符串
-  return cleanedLines.join("\n");
+  // 将字符串按行拆分为数组
+  const lines = inputString.trim().split("\n");
+  return lines.slice(1, -1).join('\n'); // 去掉第一行和最后一行，并重新拼接为字符串
 }
 
-// 展平 JSON 对象
-const flattenObject = (obj, prefix = '') => {
-    return Object.keys(obj).reduce((acc, key) => {
-        const pre = prefix.length ? `${prefix}.` : '';
-        if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
-            Object.assign(acc, flattenObject(obj[key], pre + key));
-        } else {
-            acc[pre + key] = obj[key];
-        }
-        return acc;
-    }, {});
-};
+// // 展平 JSON 对象
+// const flattenObject = (obj, prefix = '') => {
+//     return Object.keys(obj).reduce((acc, key) => {
+//         const pre = prefix.length ? `${prefix}.` : '';
+//         if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
+//             Object.assign(acc, flattenObject(obj[key], pre + key));
+//         } else {
+//             acc[pre + key] = obj[key];
+//         }
+//         return acc;
+//     }, {});
+// };
 
 
 async function main() {
-  const base64Image1 = convertImageToBase64("input1.jpg"); // Replace with the path to your local image
-  const base64Image2 = convertImageToBase64("input2.jpg"); // Replace with the path to your local image
-  // const base64Image3 = convertImageToBase64("input3.jpg"); // Replace with the path to your local image
-  const base64Image7 = convertImageToBase64("input7.jpg"); // Replace with the path to your local image
+  const base64Image1 = convertImageToBase64("input1.jpg"); 
+  const base64Image2 = convertImageToBase64("input2.jpg"); 
+  const base64Image3 = convertImageToBase64("input3.jpg"); 
+  const base64Image4 = convertImageToBase64("input4.jpg"); 
+  const base64Image5 = convertImageToBase64("input5.jpg"); 
+  const base64Image6 = convertImageToBase64("input6.jpg"); 
 
   const prompt = `
-    From the hand-written survey images, identify which selection the user has chosen. The expected output should be in the following JSON format:
+    From the hand-written survey images, identify which selection the user has chosen. The expected output should be in the following JSON format, this is in order with images:
     {
-      "Last Name/s": String,
-      "First Name/s": String,
-      "Address": String,
-      "Email": String,
-      "Mobile": Number,
-        "Interested in Westering North Adelaide as a resident": 1 | 0,
-            "Family": 1 | 0,
-            "Friend": 1 | 0,
-            "Other person": String | None,
-          "Male": 1 | 0,
-          "Female": 1 | 0,
-          "Single": 1 | 0,
-          "Couple": 1 | 0,
-          "55 to 59 years": 1 | 0,
-          "60 to 64 years": 1 | 0,
-          "65 to 69 years": 1 | 0,
-          "70 to 74 years": 1 | 0,
-          "75 to 79 years": 1 | 0,
-          "80 to 84 years": 1 | 0,
-          "85 to 89 years": 1 | 0,
-          "90+ years": 1 | 0,
-          "I live alone": 1 | 0,
-          "My partner": 1 | 0,
-          "My son/daughter": 1 | 0,
-          "Other": 1 | 0,
-        "Local Community Membership": 1 | 0,
-          "If you have Local Community Membership, please list": String | None,
-        "Pets": 1 | 0,
-        "If you have pets, what type:": String | None,
-          "Being part of a community": 1 | 0,
-          "Security": 1 | 0,
-          "Staying independent and connected to friends": 1 | 0,
-          "Services available": 1 | 0,
-          "Low/no maintenance worries": 1 | 0,
-          "Other reason of retirement living": String | None,
-          "Active and engaged with friends": 1 | 0,
-          "Socially independent": 1 | 0,
-          "Desire for more engagement": 1 | 0,
-          "Other lifestyle": String | None,
-          "Totally independent": 1 | 0,
-          "Private services (e.g. cleaning, gardening)": 1 | 0,
-          "Home Care package services": 1 | 0,
-          "Family support": 1 | 0,
-          "Apartment": 1 | 0,
-          "Villa/House": 1 | 0,
-          "Either": 1 | 0,
-          "Less than $500,000": 1 | 0,
-          "$500,000 - $1m": 1 | 0,
-          "$1m - $1.5m": 1 | 0,
-          "$1.5m - $2m": 1 | 0,
-          "$2m - $2.5m": 1 | 0,
-          "Above $2.5m": 1 | 0,
-          "Need to Sell Home": 1 | 0,
-
-          "1 bedroom": 1 | 0,
+      "1 bedroom": 1 | 0,
           "1 bedroom + study": 1 | 0,
           "2 bedrooms": 1 | 0,
           "2 bedrooms + study": 1 | 0,
@@ -133,18 +74,43 @@ async function main() {
         "Double glazing windows": 1 | 2 | 3 | 4 | 5,
         "Reverse-cycle air-conditioned zones": 1 | 2 | 3 | 4 | 5,
 
-        "Less than 1 year": 1 | 0,
-        "1 to 2 years": 1 | 0,
-        "2 to 4 years": 1 | 0,
-        "4+ years": 1 | 0,
+        "Car wash bay": 1 | 2 | 3 | 4 | 5,
+        "Secure storage": 1 | 2 | 3 | 4 | 5,
+        "Wine cellar": 1 | 2 | 3 | 4 | 5,
+        "Hairdressing Salon": 1 | 2 | 3 | 4 | 5,
+        "Beauty Salon": 1 | 2 | 3 | 4 | 5,
+        "Meeting rooms": 1 | 2 | 3 | 4 | 5,
+        "Coffee machine (residents)": 1 | 2 | 3 | 4 | 5,
+        "Business Centre": 1 | 2 | 3 | 4 | 5,
+        "Darts": 1 | 2 | 3 | 4 | 5,
+        "Billiard table": 1 | 2 | 3 | 4 | 5,
+        "Private dining room (family occasions/entertaining)": 1 | 2 | 3 | 4 | 5,
+        "Wi-Fi": 1 | 2 | 3 | 4 | 5,
+        "Pizza Oven": 1 | 2 | 3 | 4 | 5,
+        "Bocce/Pétanque": 1 | 2 | 3 | 4 | 5,
+        "Other amenities/services": String | None,
 
-        "Is there anything else you would like to share with us that you believe will be important to consider in our planning for your next home and community": String | None,
+        "Laundry services": 1 | 2 | 3 | 4 | 5,
+        "Shopping": 1 | 2 | 3 | 4 | 5,
+        "Nursing Services": 1 | 2 | 3 | 4 | 5,
+        "General and regular household cleaning": 1 | 2 | 3 | 4 | 5,
+        "Spring cleaning": 1 | 2 | 3 | 4 | 5,
+        "Window cleaning (external)": 1 | 2 | 3 | 4 | 5,
+        "Wellness checks": 1 | 2 | 3 | 4 | 5,
+        "Personal Trainer/Exercise Physiologist": 1 | 2 | 3 | 4 | 5,
+        "Receiving online shopping (groceries)": 1 | 2 | 3 | 4 | 5,
+        "Receiving online shopping (non-perishable)": 1 | 2 | 3 | 4 | 5,
+        "Housekeeping services": 1 | 2 | 3 | 4 | 5,
+        "Medication management": 1 | 2 | 3 | 4 | 5,
+        "Lifestyle/social coordinator": 1 | 2 | 3 | 4 | 5,
+        "Meals delivered": 1 | 2 | 3 | 4 | 5,
+        "Personal care": 1 | 2 | 3 | 4 | 5,
+        "Bus transport service": 1 | 2 | 3 | 4 | 5,
+        "Concierge": 1 | 2 | 3 | 4 | 5,
+        "Waste/garbage collection": 1 | 2 | 3 | 4 | 5,
+        "Other extra service (please list)": String | None
 
-        "And finally, please tell us what is most appealing for you about our plans for Westering North Adelaide?": String | None
-        
-
-
-        }
+        Rules: just return the string from '{' to '}'.
     `;
 
   const response = await openai.chat.completions.create({
@@ -157,38 +123,53 @@ async function main() {
             type: "text",
             text: prompt,
           },
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${base64Image1}`, // Use the Base64 encoded image here
-            },
-          },
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${base64Image2}`, // Use the Base64 encoded image here
-            },
-          },
           // {
           //   type: "image_url",
           //   image_url: {
-          //     url: `data:image/jpeg;base64,${base64Image3}`, // Use the Base64 encoded image here
+          //     url: `data:image/jpeg;base64,${base64Image1}`,
           //   },
           // },
           {
             type: "image_url",
             image_url: {
-              url: `data:image/jpeg;base64,${base64Image7}`, // Use the Base64 encoded image here
+              url: `data:image/jpeg;base64,${base64Image2}`,
             },
           },
+          // {
+          //   type: "image_url",
+          //   image_url: {
+          //     url: `data:image/jpeg;base64,${base64Image3}`,
+          //   },
+          // },
+          // {
+          //   type: "image_url",
+          //   image_url: {
+          //     url: `data:image/jpeg;base64,${base64Image4}`,
+          //   },
+          // },
+          {
+            type: "image_url",
+            image_url: {
+              url: `data:image/jpeg;base64,${base64Image5}`,
+            },
+          },
+          // {
+          //   type: "image_url",
+          //   image_url: {
+          //     url: `data:image/jpeg;base64,${base64Image6}`,
+          //   },
+          // },
         ],
       },
     ],
   });
 
-
   const jsonData = response.choices[0].message.content;
+  console.log("jsonData:");
+  console.log(jsonData);
+
   const cleanedString = cleanString(jsonData);
+  console.log("cleanedString:");
 
   console.log(cleanedString);
   let jsonObject = null;
