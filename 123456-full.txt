@@ -1,8 +1,17 @@
-"Last Name/s": String,
-      "First Name/s": String,
-      "Address": String,
-      "Email": String,
-      "Mobile": Number,
+   As an expert-level administrative assistant in the administrative department, your task is to create a data entry document that improves efficiency and accuracy in data management. The output should be a high-quality document with organized and error-free data entry. The finished work will be used by the team for data analysis and decision-making. Core success factors include attention to detail, timeliness, and accuracy, measured by the document's ability to streamline data entry processes and reduce errors.
+
+   If an option is ticked or crossed, represent it as '1'; otherwise, represent it as '0'.
+   When a number is circled, return that number, which should be between 1 and 5. The page will be divided into two columns, with 1 on the leftmost side and 5 on the rightmost side. If you cannot recognise the number, use its position to determine the corresponding value. If a string is uncertain, indicate this with "unknown".
+
+   Please try your best.
+
+  The expected JSON output format is as follows: 
+  {
+      "Last Name/s": String,  // e.g., "Smith"
+      "First Name/s": String,  // e.g., "John"
+      "Address": String,       // e.g., "123 Example St, Adelaide"
+      "Email": String,         // e.g., "john.smith@example.com"
+      "Mobile": String,        // e.g., "0412345678"
         "Interested in Westering North Adelaide as a resident": 1 | 0,
             "Family": 1 | 0,
             "Friend": 1 | 0,
@@ -24,19 +33,19 @@
           "My son/daughter": 1 | 0,
           "Other": 1 | 0,
         "Local Community Membership": 1 | 0,
-          "If you have Local Community Membership, please list": String | None,
+          "If you have Local Community Membership, please list": String,
         "Pets": 1 | 0,
-        "If you have pets, what type:": String | None,
+        "If you have pets, what type:": String,
           "Being part of a community": 1 | 0,
           "Security": 1 | 0,
           "Staying independent and connected to friends": 1 | 0,
           "Services available": 1 | 0,
           "Low/no maintenance worries": 1 | 0,
-          "Other reason of retirement living": String | None,
+          "Other reason of retirement living": String,
           "Active and engaged with friends": 1 | 0,
           "Socially independent": 1 | 0,
           "Desire for more engagement": 1 | 0,
-          "Other lifestyle": String | None,
+          "Other lifestyle": String,
           "Totally independent": 1 | 0,
           "Private services (e.g. cleaning, gardening)": 1 | 0,
           "Home Care package services": 1 | 0,
@@ -192,7 +201,7 @@
         "Wi-Fi": 1 | 2 | 3 | 4 | 5,
         "Pizza Oven": 1 | 2 | 3 | 4 | 5,
         "Bocce/Pétanque": 1 | 2 | 3 | 4 | 5,
-        "Other amenities/services": String | None,
+        "Other amenities/services": String,
 
         "Laundry services": 1 | 2 | 3 | 4 | 5,
         "Shopping": 1 | 2 | 3 | 4 | 5,
@@ -212,7 +221,7 @@
         "Bus transport service": 1 | 2 | 3 | 4 | 5,
         "Concierge": 1 | 2 | 3 | 4 | 5,
         "Waste/garbage collection": 1 | 2 | 3 | 4 | 5,
-        "Other extra service (please list)": String | None,
+        "Other extra service (please list)": String,
 
 
         "Less than 1 year": 1 | 0,
@@ -222,4 +231,9 @@
 
         "Is there anything else you would like to share with us that you believe will be important to consider in our planning for your next home and community": String | None,
         "And finally, please tell us what is most appealing for you about our plans for Westering North Adelaide?": String | None
-        }
+        
+
+        // Just return the string from '{' to '}'
+        // If any handwriting is unclear, use "unknown" instead of null or a number
+      }
+      If a field is left blank or unclear, return "unknown" for that field.
