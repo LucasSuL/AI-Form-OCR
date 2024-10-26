@@ -1,52 +1,3 @@
-import OpenAI from "openai";
-import fs from "fs";
-import ExcelJS from "exceljs";
-
-const openai = new OpenAI({
-  apiKey:process.env.GPT_API
-});
-
-// Function to convert image to Base64
-function convertImageToBase64(imagePath) {
-  const imageBuffer = fs.readFileSync(imagePath);
-  const base64Image = imageBuffer.toString("base64");
-  return base64Image;
-}
-
-function cleanString(inputString) {
-  // split lines into array
-  const lines = inputString.trim().split("\n");
-  return lines.slice(1, -1).join('\n'); // remove first and last line, and conbine again
-}
-
-// // flatten json obj
-// const flattenObject = (obj, prefix = '') => {
-//     return Object.keys(obj).reduce((acc, key) => {
-//         const pre = prefix.length ? `${prefix}.` : '';
-//         if (typeof obj[key] === 'object' && !Array.isArray(obj[key])) {
-//             Object.assign(acc, flattenObject(obj[key], pre + key));
-//         } else {
-//             acc[pre + key] = obj[key];
-//         }
-//         return acc;
-//     }, {});
-// };
-
-
-async function main() {
-  const base64Image1 = convertImageToBase64("input1.jpg"); 
-  const base64Image2 = convertImageToBase64("input2.jpg"); 
-  const base64Image3 = convertImageToBase64("input3.jpg"); 
-  const base64Image3BoxLine = convertImageToBase64("b-input3.jpg"); 
-  const base64Image4 = convertImageToBase64("input4.jpg"); 
-  const base64Image4EmptyLine = convertImageToBase64("b-input4.jpg"); 
-  const base64Image5 = convertImageToBase64("input5.jpg"); 
-  const base64Image5C = convertImageToBase64("c-input5.jpg"); 
-  const base64Image6 = convertImageToBase64("input6.jpg"); 
-
-  console.log("Analysing...")
-
-  const prompt = `
  As an expert-level administrative assistant in the administrative department, your task is to create a data entry document that improves efficiency and accuracy in data management. The output should be a high-quality document with organized and error-free data entry. The finished work will be used by the team for data analysis and decision-making. Core success factors include attention to detail, timeliness, and accuracy, measured by the document's ability to streamline data entry processes and reduce errors.
 
    Rules:
@@ -259,117 +210,16 @@ async function main() {
         "Concierge": 1 | 2 | 3 | 4 | 5,
         "Waste/garbage collection": 1 | 2 | 3 | 4 | 5,
         "Other extra service (please list)": String,
+
+
         "Less than 1 year": 1 | 0,
         "1 to 2 years": 1 | 0,
         "2 to 4 years": 1 | 0,
         "4+ years": 1 | 0,
+
         "Is there anything else you would like to share with us that you believe will be important to consider in our planning for your next home and community": String | None,
         "And finally, please tell us what is most appealing for you about our plans for Westering North Adelaide?": String | None
+
+        
         }
         Please try your best. 
-    `;
-
-  const response = await openai.chat.completions.create({
-    model: "gpt-4o",
-    messages: [
-      {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: prompt,
-          },
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${base64Image1}`,
-            },
-          },
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${base64Image2}`,
-            },
-          },
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${base64Image3}`,
-            },
-          },
-          // {
-          //   type: "image_url",
-          //   image_url: {
-          //     url: `data:image/jpeg;base64,${base64Image3BoxLine}`,
-          //   },
-          // },
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${base64Image4}`,
-            },
-          },
-          // {
-          //   type: "image_url",
-          //   image_url: {
-          //     url: `data:image/jpeg;base64,${base64Image4EmptyLine}`,
-          //   },
-          // },
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${base64Image5}`,
-            },
-          },
-          {
-            type: "image_url",
-            image_url: {
-              url: `data:image/jpeg;base64,${base64Image6}`,
-            },
-          },
-        ],
-      },
-    ],
-  });
-
-  const jsonData = response.choices[0].message.content;
-  console.log("OCR success!");
-  console.log("Parsing results...");
-
-  const cleanedString = cleanString(jsonData);
-  let jsonObject = null;
-
-  try {
-    // Convert the JSON string to a JavaScript object
-    jsonObject = JSON.parse(cleanedString);
-
-    // Log the result
-    // console.log(jsonObject);
-  } catch (error) {
-    console.error("Error parsing JSON:", error);
-  }
-
-  // create new excel
-  const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet("My Sheet");
-
-  // set excel header
-  worksheet.columns = Object.keys(jsonObject).map((key) => ({
-    header: key,
-    key,
-  }));
-
-  // write Json object into excel
-  worksheet.addRow(jsonObject);
-
-  // save excel file
-  workbook.xlsx
-    .writeFile("output.xlsx")
-    .then(() => {
-      console.log("Excel file created successfully!");
-    })
-    .catch((err) => {
-      console.error("Error creating Excel file:", err);
-    });
-}
-main();
