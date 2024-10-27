@@ -43,7 +43,8 @@ async function main() {
      Rules:
       1- If an option is ticked, represent it as '1'; otherwise, represent it as '0'.
       2- When a number is circled, return that number, which should be between 1 and 5. The page will be divided into two columns, with 1 on the leftmost side and 5 on the rightmost side. If you cannot recognise the number, use its position to determine the corresponding value. If the number is uncertain, return 3
-      3- If a string to be returned is uncertain, indicate this with "unknown".
+      3- If a string to be returned is not written, just leave it empty.
+      4- Do NOT contain backtick within brackets since it will cause parsing error.
 
     The expected JSON output format is as follows:
     {
@@ -51,7 +52,7 @@ async function main() {
         "First Name/s": String,  // e.g., "John"
         "Address": String,       // e.g., "123 Example St, Adelaide"
         "Email": String,         // e.g., "john.smith@example.com"
-        "Mobile": String,        // e.g., "0412345678"
+        "Mobile": String,        // e.g., "0412345678" without space between
           "Interested in Westering for yourself as a resident": 1 | 0,
               "Family": 1 | 0,
               "Friend": 1 | 0,
@@ -71,7 +72,7 @@ async function main() {
             "I live alone": 1 | 0,
             "My partner": 1 | 0,
             "My son/daughter": 1 | 0,
-            "Other person live with me": 1 | 0,
+            "Other person live with me": String,
           "Local Community Membership": 1 | 0,
             "If you have Local Community Membership, please list": String,
           "Pets": 1 | 0,
@@ -92,7 +93,7 @@ async function main() {
             "Family support": 1 | 0,
             "Apartment": 1 | 0,
             "Villa/House": 1 | 0,
-            "Either": 1 | 0,
+            "Either housing style": 1 | 0,
             "Less than $500,000": 1 | 0,
             "$500,000 - $1m": 1 | 0,
             "$1m - $1.5m": 1 | 0,
@@ -114,7 +115,7 @@ async function main() {
             "Courtyard": 1 | 0,
             "Open balcony": 1 | 0,
             "Enclosed balcony (Wintergarden)": 1 | 0,
-            "Either": 1 | 0,
+            "Either courtyard or balcony": 1 | 0,
 
             "1 car": 1 | 2 | 3 | 4 | 5,
           "2 cars": 1 | 2 | 3 | 4 | 5,
@@ -170,8 +171,8 @@ async function main() {
           "Filtered water": 1 | 2 | 3 | 4 | 5,
           "Zip Tap": 1 | 2 | 3 | 4 | 5,
 
-          "Wine fridge": 1 | 2 | 3 | 4 | 5,
           "Plumbed fridge": 1 | 2 | 3 | 4 | 5,
+          "Wine fridge": 1 | 2 | 3 | 4 | 5,
           "Shower with flexible hose": 1 | 2 | 3 | 4 | 5,
           "European laundry": 1 | 2 | 3 | 4 | 5,
           "Laundry in bathroom": 1 | 2 | 3 | 4 | 5,
@@ -274,8 +275,8 @@ async function main() {
           "2 to 4 years": 1 | 0,
           "4+ years": 1 | 0,
 
-          "Is there anything else you would like to share with us that you believe will be important to consider in our planning for your next home and community": String | None,
-          "And finally, please tell us what is most appealing for you about our plans for Westering North Adelaide?": String | None
+          "Is there anything else you would like to share with us that you believe will be important to consider in our planning for your next home and community": String,
+          "And finally, please tell us what is most appealing for you about our plans for Westering North Adelaide?": String,
           }
           Please try your best.
       `;
