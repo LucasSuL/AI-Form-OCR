@@ -7,7 +7,7 @@ const openai = new OpenAI({
   apiKey: process.env.GPT_API,
 });
 
-const parentFolder = path.join("D:", "02-FullStack", "AI Form OCR", "images");
+const parentFolder = path.join("D:", "11-Survey PDFs", "root folder");
 
 function convertImageToBase64(imagePath) {
   const imageBuffer = fs.readFileSync(imagePath);
@@ -25,25 +25,13 @@ async function main() {
   const worksheet = workbook.addWorksheet("Survey Results");
   let headerWritten = false;
 
-  // // 设置Excel的header（根据问卷的固定字段）
-  // const headers = [
-  //   "24/7 Emergency Call System",
-  //   "Emergency call buttons installed",
-  //   "Emergency call pendant",
-  //   "Secure garage access",
-  //   "Walking distance to shops",
-  //   "Walking distance to cafe",
-  //   // ...添加所有字段
-  // ];
-  // worksheet.columns = headers.map((header) => ({ header, key: header }));
-
     const prompt = `
    As an expert-level administrative assistant in the administrative department, your task is to create a data entry document that improves efficiency and accuracy in data management. The output should be a high-quality document with organized and error-free data entry. The finished work will be used by the team for data analysis and decision-making. Core success factors include attention to detail, timeliness, and accuracy, measured by the document's ability to streamline data entry processes and reduce errors.
 
      Rules:
       1- If an option is ticked, represent it as '1'; otherwise, represent it as '0'.
       2- When a number is circled, return that number, which should be between 1 and 5. The page will be divided into two columns, with 1 on the leftmost side and 5 on the rightmost side. If you cannot recognise the number, use its position to determine the corresponding value. If the number is uncertain, return 3
-      3- If a string to be returned is not written, just leave it empty.
+      3- If a string to be returned is not written, or no number is circled, just leave it empty.
       4- Do NOT contain backtick within brackets since it will cause parsing error.
 
     The expected JSON output format is as follows:
@@ -363,7 +351,7 @@ async function main() {
       worksheet.addRow(jsonObject);
     }
     // 保存 Excel 文件
-    await workbook.xlsx.writeFile(path.join(parentFolder, "survey_data.xlsx"));
+    await workbook.xlsx.writeFile(path.join(parentFolder, "survey_data1.xlsx"));
     console.log("Excel file saved!");
 
   } catch (error) {
